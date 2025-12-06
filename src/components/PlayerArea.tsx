@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import type { PlayerState } from '../game/types';
 import '../styles/PlayerArea.css';
@@ -5,14 +7,12 @@ import '../styles/PlayerArea.css';
 interface PlayerAreaProps {
     name: string;
     player: PlayerState;
-
 }
-
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({ name, player }) => {
 
     const cardCount = player.deck.length;
-
+    const takenCardCount = player.takenCards.length; // <-- ДОБАВЛЯЕМ СЧЕТЧИК ВЗЯТЫХ КАРТ
 
     return (
         <div className="player-area">
@@ -35,7 +35,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({ name, player }) => {
 
 
             <div className="player-score">
-                Rounds Won: {player.wins}
+                Cards Taken: {takenCardCount}
             </div>
 
         </div>

@@ -18,7 +18,6 @@ export type Deck = GameCard[];
 export interface PlayerState {
     deck: Deck;
     wins: number;
-    // НОВОЕ ПОЛЕ: Карты, выигранные в раундах
     takenCards: Deck;
 }
 

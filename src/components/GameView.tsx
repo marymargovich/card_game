@@ -1,4 +1,4 @@
-import React from 'react';
+import type {FC} from 'react';
 import type { GameState } from '../game/types';
 import { PlayerArea } from './PlayerArea.tsx';
 import { TableArea } from './TableArea.tsx';
@@ -11,7 +11,7 @@ interface GameViewProps {
     playRound: () => void;
 }
 
-export const GameView: React.FC<GameViewProps> = ({ gameState, playerName, startGame, playRound }) => {
+export const GameView: FC<GameViewProps> = ({ gameState, playerName, startGame, playRound }) => { // <-- ИСПРАВЛЕНО: Используем FC
 
     const p1 = gameState.player1;
     const name = playerName;
@@ -62,10 +62,11 @@ export const GameView: React.FC<GameViewProps> = ({ gameState, playerName, start
                 </div>
 
 
+                {/* PLAYER 2 (Компьютер) */}
                 <PlayerArea
                     name="COMPUTER"
                     player={gameState.player2}
-                    isComputer={true}
+                    // isComputer={true} <-- ПРОПС УДАЛЕН
                 />
             </div>
         </div>
