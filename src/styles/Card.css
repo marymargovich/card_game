@@ -1,0 +1,54 @@
+/* Общие Стили Карты */
+.card {
+    width: 120px;
+    height: 180px;
+
+    border: 2px solid #333;
+    border-radius: 6px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+    margin: 0 5px;
+    user-select: none;
+
+    background: white;
+    color: black;
+
+    position: relative;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+/* Стиль для текста по центру */
+.card-center-text {
+    font-size: 3em;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Стили для Рубашки (.card-back)   */
+.card-back {
+    background-image: url('../images/back.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #444;
+}
+
+/* Слот пустой колоды  */
+.card-empty {
+    background: transparent;
+    border: 2px dashed rgba(255, 255, 255, 0.5);
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-empty::before {
+    content: "NO CARDS";
+}

@@ -1,0 +1,53 @@
+/*   Основной Контейнер Стола  */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+    margin-top: 0;
+    height: 100%;
+    justify-content: center;
+
+    width: 100%;
+}
+
+/*   Ряд Карт на Столе   */
+.cards-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+/*   Слот для Карты (контейнер)   */
+.table-slot {
+    width: 120px;
+    height: 180px;
+
+    border: 3px dashed white;
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+
+    transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+
+
+/*  раунд --- */
+.round-message {
+    font-weight: bold;
+    color: white;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    text-shadow: 1px 1px 4px black;
+    text-align: center;
+    min-height: 40px;
+    line-height: 1.2;
+}
