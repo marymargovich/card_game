@@ -1,8 +1,7 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import type { GameState, GameCard } from "./game/types";
 import './styles/App.css';
 import { GameView } from "./components/GameView.tsx";
-
 import { compareCards } from "./game/gameLogic.ts";
 import { createDeck, dealCards, shuffleDeck } from "./game/deck.ts";
 
@@ -17,24 +16,14 @@ const INITIAL_GAME_STATE: GameState = {
     lastRoundWinner: null,
 };
 
-interface AppProps {}
+function App() {
+    const [playerName, setPlayerName] = useState("");
+    const [nameSubmitted, setNameSubmitted] = useState(false);
+    const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE);
 
-interface AppState {
-    playerName: string;
-    nameSubmitted: boolean;
-    gameState: GameState;
-}
-
-class App extends Component<AppProps, AppState> {
-
-    state: AppState = {
-        playerName: "",
-        nameSubmitted: false,
-        gameState: INITIAL_GAME_STATE,
-    };
-
-    startGame = () => {
+    const startGame = () => {
         const fullDeck = shuffleDeck(createDeck());
+        // Берем 36 карт для игры
         const shortDeck = fullDeck.slice(0, 36);
         const [p1Deck, p2Deck] = dealCards(shortDeck);
 
@@ -44,22 +33,19 @@ class App extends Component<AppProps, AppState> {
         const newP1Deck = p1Deck.slice(1);
         const newP2Deck = p2Deck.slice(1);
 
-        this.setState({
-            gameState: {
-                player1: { deck: newP1Deck, wins: 0, takenCards: [] },
-                player2: { deck: newP2Deck, wins: 0, takenCards: [] },
-                table: { p1Card, p2Card },
-                round: 1,
-                isGameOver: false,
-                winner: null,
-                message: `Round 1. Press 'Play Round'`,
-                lastRoundWinner: null,
-            }
+        setGameState({
+            player1: { deck: newP1Deck, wins: 0, takenCards: [] },
+            player2: { deck: newP2Deck, wins: 0, takenCards: [] },
+            table: { p1Card, p2Card },
+            round: 1,
+            isGameOver: false,
+            winner: null,
+            message: `Round 1. Press 'Play Round'`,
+            lastRoundWinner: null,
         });
     };
 
-    playRound = () => {
-        const { gameState, playerName } = this.state;
+    const playRound = () => {
         const { player1, player2, table, round } = gameState;
 
         const p1CardOnTable = table.p1Card;
@@ -82,14 +68,19 @@ class App extends Component<AppProps, AppState> {
         let lastRoundWinner: 'player1' | 'player2' | 'draw' | null = null;
 
         if (result === 1) {
+            // Победил Игрок 1 — забирает обе карты
             newP1TakenCards.push(...cardsToCollect);
             p1Wins += 1;
             lastRoundWinner = 'player1';
         } else if (result === 2) {
+            // Победил Игрок 2 (Компьютер) — забирает обе карты
             newP2TakenCards.push(...cardsToCollect);
             p2Wins += 1;
             lastRoundWinner = 'player2';
         } else {
+            // Ничья — каждый забирает свою карту обратно в "бито", чтобы карты не пропадали
+            newP1TakenCards.push(p1CardOnTable);
+            newP2TakenCards.push(p2CardOnTable);
             lastRoundWinner = 'draw';
         }
 
@@ -99,6 +90,7 @@ class App extends Component<AppProps, AppState> {
         const canP1DrawNext = newP1Deck.length > 0;
         const canP2DrawNext = newP2Deck.length > 0;
 
+        // Если карты кончились хотя бы у одного (или у обоих)
         if (!canP1DrawNext && !canP2DrawNext) {
             isGameOver = true;
         }
@@ -116,12 +108,12 @@ class App extends Component<AppProps, AppState> {
         let p2NextCard: GameCard | null = null;
         let nextMessage: string;
 
-        const name = playerName || "YOU";
+        const displayName = playerName || "YOU";
 
         if (isGameOver) {
             const winnerName =
                 gameWinner === 'player1'
-                    ? name
+                    ? displayName
                     : gameWinner === 'player2'
                         ? 'COMPUTER'
                         : 'DRAW';
@@ -142,55 +134,48 @@ class App extends Component<AppProps, AppState> {
 
         const nextRoundValue = isGameOver ? round : round + 1;
 
-        this.setState({
-            gameState: {
-                player1: { deck: newP1Deck, wins: p1Wins, takenCards: newP1TakenCards },
-                player2: { deck: newP2Deck, wins: p2Wins, takenCards: newP2TakenCards },
-                table: { p1Card: p1NextCard, p2Card: p2NextCard },
-                round: nextRoundValue,
-                isGameOver,
-                winner: gameWinner,
-                message: nextMessage.trim(),
-                lastRoundWinner: lastRoundWinner,
-            }
+        setGameState({
+            player1: { deck: newP1Deck, wins: p1Wins, takenCards: newP1TakenCards },
+            player2: { deck: newP2Deck, wins: p2Wins, takenCards: newP2TakenCards },
+            table: { p1Card: p1NextCard, p2Card: p2NextCard },
+            round: nextRoundValue,
+            isGameOver,
+            winner: gameWinner,
+            message: nextMessage.trim(),
+            lastRoundWinner,
         });
     };
 
-    render() {
-        const { gameState, playerName, nameSubmitted } = this.state;
-        const name = playerName || "YOU";
+    return (
+        <div className="app">
+            <h1>War Card Game</h1>
 
-        return (
-            <div className="app">
-                <h1>War Card Game</h1>
-
-                {!nameSubmitted ? (
-                    <div style={{ marginBottom: "20px" }}>
-                        <input
-                            type="text"
-                            placeholder="Enter your name"
-                            value={playerName}
-                            onChange={(e) => this.setState({ playerName: e.target.value })}
-                        />
-                        <button
-                            onClick={() => this.setState({ nameSubmitted: true })}
-                            style={{ marginLeft: "10px" }}
-                            disabled={!playerName.trim()}
-                        >
-                            Submit
-                        </button>
-                    </div>
-                ) : (
-                    <GameView
-                        gameState={gameState}
-                        playerName={name}
-                        startGame={this.startGame}
-                        playRound={this.playRound}
+            {!nameSubmitted ? (
+                <div style={{ marginBottom: "20px" }}>
+                    <input
+                        type="text"
+                        placeholder="Enter your name"
+                        value={playerName}
+                        onChange={(e) => setPlayerName(e.target.value)}
                     />
-                )}
-            </div>
-        );
-    }
+                    <button
+                        onClick={() => setNameSubmitted(true)}
+                        style={{ marginLeft: "10px" }}
+                        disabled={!playerName.trim()}
+                    >
+                        Submit
+                    </button>
+                </div>
+            ) : (
+                <GameView
+                    gameState={gameState}
+                    playerName={playerName || "YOU"}
+                    startGame={startGame}
+                    playRound={playRound}
+                />
+            )}
+        </div>
+    );
 }
 
 export default App;

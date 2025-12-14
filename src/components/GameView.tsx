@@ -66,7 +66,7 @@ export const GameView: FC<GameViewProps> = ({ gameState, playerName, startGame, 
                 <PlayerArea
                     name="COMPUTER"
                     player={gameState.player2}
-                    // isComputer={true} <-- ПРОПС УДАЛЕН
+
                 />
             </div>
         </div>

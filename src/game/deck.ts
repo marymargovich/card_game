@@ -36,7 +36,7 @@ export function createDeck(): GameCard[] {
     return deck;
 }
 
-
+//перемешивание
 export function shuffleDeck(deck: GameCard[]): GameCard[] {
     const shuffledDeck = [...deck];
     for (let i = shuffledDeck.length - 1; i > 0; i--) {
